@@ -1,0 +1,47 @@
+{
+  "$schema": "https://hypar.io/Schemas/Function.json",
+  "description": "Subdivide floor slabs into sections",
+  "id": "21bb1cbe-0354-402d-880e-7de53c03f220",
+  "name": "Subdivide Slab",
+  "repository_url": "https://github.com/hypar-io/function",
+  "model_dependencies": [
+    {
+      "name": "Floors",
+      "optional": false
+    }
+  ],
+  "inputs": [
+    {
+      "min": 1.0,
+      "max": 50,
+      "step": 1.0,
+      "name": "Length",
+      "description": "The max length of each subdivision.",
+      "type": "range"
+    },
+    {
+      "min": 1.0,
+      "max": 50,
+      "step": 1.0,
+      "name": "Width",
+      "description": "The max width of each subdivision.",
+      "type": "range"
+    },
+    {
+      "name": "Subdivide at void corners",
+      "description": "If true, splits will be inserted at the corners of voids.",
+      "type": "boolean"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Count",
+      "description": "Number of regions.",
+      "type": "number"
+    }
+  ],
+  "preview_image": null,
+  "element_types": [
+    "https://raw.githubusercontent.com/hypar-io/Schemas/master/Exclusion.json"
+  ]
+}
