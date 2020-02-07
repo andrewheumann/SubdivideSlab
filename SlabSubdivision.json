@@ -35,6 +35,11 @@
             "description": "The depth of the slab.",
             "type": "number",
             "minimum": 0
+        },
+        "Volume": {
+            "description": "The volume of the slab section.",
+            "type": "number",
+            "minimum": 0
         }
     },
     "additionalProperties": false
