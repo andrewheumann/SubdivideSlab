@@ -15,7 +15,7 @@ namespace SubdivideSlab.Tests
         [Fact]
         public void RunSubdivAlgo()
         {
-            var jsonIn = System.IO.File.ReadAllText("../../../../Floors-from-web.json");
+            var jsonIn = System.IO.File.ReadAllText("../../../../Floors.json");
             var model = Model.FromJson(jsonIn);
             var inputs = new SubdivideSlabInputs(2, 2, false, "", "", new Dictionary<string, string>(), "", "", "");
             var outputs = SubdivideSlab.Execute(new Dictionary<string, Model> { { "Floors", model } }, inputs);
