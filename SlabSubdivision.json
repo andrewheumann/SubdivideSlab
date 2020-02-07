@@ -23,7 +23,7 @@
         "discriminator": {
             "type": "string"
         },
-        "ID": {
+        "Identifier": {
             "description": "The identifier of this section.",
             "type": "string"
         },
