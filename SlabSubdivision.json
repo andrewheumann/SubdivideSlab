@@ -31,6 +31,10 @@
             "description": "The id of the profile to extrude.",
             "$ref": "https://hypar.io/Schemas/Geometry/Profile.json"
         },
+        "IsTrimmed": {
+            "description": "True if a subdivision is trimmed or clipped by the boundary of the slab.",
+            "type": "boolean"
+        },
         "Depth": {
             "description": "The depth of the slab.",
             "type": "number",
