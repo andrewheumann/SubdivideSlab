@@ -3,7 +3,7 @@
     <ProjectReference Include="..\dependencies\SubdivideSlab.Dependencies.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Hypar.Elements" Version="0.5.1-alpha.3"/>
+    <PackageReference Include="Hypar.Elements" Version="0.5.1"/>
     <PackageReference Include="Hypar.Functions" Version="0.4.4.2"/>
   </ItemGroup>
   <PropertyGroup>

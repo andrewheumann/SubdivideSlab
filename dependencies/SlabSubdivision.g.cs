@@ -26,17 +26,18 @@ namespace Elements
 	public partial class SlabSubdivision : GeometricElement
     {
         [Newtonsoft.Json.JsonConstructor]
-        public SlabSubdivision(string @identifier, Profile @profile, double @depth, double @volume, Transform @transform, Material @material, Representation @representation, System.Guid @id, string @name)
-            : base(transform, material, representation, id, name)
+        public SlabSubdivision(string @identifier, Profile @profile, bool @isTrimmed, double @depth, double @volume, Transform @transform, Material @material, Representation @representation, bool @isElementDefinition, System.Guid @id, string @name)
+            : base(transform, material, representation, isElementDefinition, id, name)
         {
             var validator = Validator.Instance.GetFirstValidatorForType<SlabSubdivision>();
             if(validator != null)
             {
-                validator.Validate(new object[]{ @identifier, @profile, @depth, @volume, @transform, @material, @representation, @id, @name});
+                validator.Validate(new object[]{ @identifier, @profile, @isTrimmed, @depth, @volume, @transform, @material, @representation, @isElementDefinition, @id, @name});
             }
         
             this.Identifier = @identifier;
             this.Profile = @profile;
+            this.IsTrimmed = @isTrimmed;
             this.Depth = @depth;
             this.Volume = @volume;
         }
@@ -48,6 +49,10 @@ namespace Elements
         /// <summary>The id of the profile to extrude.</summary>
         [Newtonsoft.Json.JsonProperty("Profile", Required = Newtonsoft.Json.Required.AllowNull)]
         public Profile Profile { get; set; }
+    
+        /// <summary>True if a subdivision is trimmed or clipped by the boundary of the slab.</summary>
+        [Newtonsoft.Json.JsonProperty("IsTrimmed", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsTrimmed { get; set; }
     
         /// <summary>The depth of the slab.</summary>
         [Newtonsoft.Json.JsonProperty("Depth", Required = Newtonsoft.Json.Required.Always)]

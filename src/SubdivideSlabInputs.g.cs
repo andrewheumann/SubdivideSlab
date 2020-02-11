@@ -34,6 +34,12 @@ namespace SubdivideSlab
 		[JsonProperty("Subdivide at void corners")]
 		public bool SubdivideAtVoidCorners {get;}
 
+		/// <summary>
+		/// If true, grid orientation will run parallel to the longest edge of the floor boundary.
+		/// </summary>
+		[JsonProperty("Align to longest edge")]
+		public bool AlignToLongestEdge {get;}
+
 
         
         /// <summary>
@@ -45,6 +51,7 @@ namespace SubdivideSlab
 			this.Length = 50;
 			this.Width = 50;
 			this.SubdivideAtVoidCorners = false;
+			this.AlignToLongestEdge = false;
 
         }
 
@@ -54,11 +61,12 @@ namespace SubdivideSlab
         /// </summary>
         /// <returns></returns>
         [JsonConstructor]
-        public SubdivideSlabInputs(double length, double width, bool subdivideatvoidcorners, string bucketName, string uploadsBucket, Dictionary<string, string> modelInputKeys, string gltfKey, string elementsKey, string ifcKey): base(bucketName, uploadsBucket, modelInputKeys, gltfKey, elementsKey, ifcKey)
+        public SubdivideSlabInputs(double length, double width, bool subdivideatvoidcorners, bool aligntolongestedge, string bucketName, string uploadsBucket, Dictionary<string, string> modelInputKeys, string gltfKey, string elementsKey, string ifcKey): base(bucketName, uploadsBucket, modelInputKeys, gltfKey, elementsKey, ifcKey)
         {
 			this.Length = length;
 			this.Width = width;
 			this.SubdivideAtVoidCorners = subdivideatvoidcorners;
+			this.AlignToLongestEdge = aligntolongestedge;
 
 		}
 

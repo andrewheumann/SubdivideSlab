@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.IO;
 using Elements.Geometry.Solids;
+using Newtonsoft.Json;
 
 
 namespace SubdivideSlab
@@ -27,7 +28,6 @@ namespace SubdivideSlab
                 throw new ArgumentException("No Floors found.");
             }
             allFloors.AddRange(flrModel.AllElementsOfType<Floor>());
-            var modelCurves = new List<ModelCurve>();
             List<SlabSubdivision> subdivisions = new List<SlabSubdivision>();
             for (int i = 0; i < allFloors.Count; i++)
             {
@@ -40,7 +40,15 @@ namespace SubdivideSlab
                 var boundaries = new List<Polygon>();
                 boundaries.Add(perimeter);
                 if (voids != null) boundaries.AddRange(voids);
-                var grid = new Grid2d(boundaries);
+                Transform transform = null;
+                if (input.AlignToLongestEdge)
+                {
+                    var longestEdge = perimeter.Segments().OrderByDescending(p => p.Length()).First();
+                    var xAxis = (longestEdge.End - longestEdge.Start).Unitized();
+                    transform = new Transform(Vector3.Origin, xAxis, Vector3.ZAxis, 0);
+                    transform.Invert();
+                }
+                var grid = new Grid2d(boundaries, transform);
                 if (input.SubdivideAtVoidCorners && voids.Count > 0)
                 {
                     foreach (var voidCrv in voids)
@@ -49,7 +57,6 @@ namespace SubdivideSlab
                     }
                     foreach (var cell in grid.CellsFlat)
                     {
-
                         cell.U.DivideByApproximateLength(input.Length, EvenDivisionMode.RoundUp);
                         cell.V.DivideByApproximateLength(input.Width, EvenDivisionMode.RoundUp);
                     }
@@ -61,24 +68,21 @@ namespace SubdivideSlab
                 }
 
                 var cells = grid.GetCells();
-                List<ModelCurve> crvs = new List<ModelCurve>();
 
                 for (int i1 = 0; i1 < cells.Count; i1++)
                 {
                     var id = $"{floorId}-{i1:000}";
                     Grid2d cell = cells[i1];
                     var cellCrvs = cell.GetTrimmedCellGeometry();
+                    var isTrimmed = cell.IsTrimmed();
                     if (cellCrvs != null && cellCrvs.Length > 0)
                     {
-                        crvs.AddRange(cellCrvs.Select(cc => ToModelCurve(cc, GetFloorElevation(floor))));
-                        subdivisions.Add(CreateSlabSubdivision(id, cellCrvs, floor));
+                        subdivisions.Add(CreateSlabSubdivision(id, cellCrvs, floor, isTrimmed));
                     }
                 }
-                modelCurves.AddRange(crvs);
             }
 
-            var output = new SubdivideSlabOutputs(modelCurves.Count);
-            output.model.AddElements(modelCurves);
+            var output = new SubdivideSlabOutputs(subdivisions.Count);
             output.model.AddElements(subdivisions);
             return output;
         }
@@ -89,7 +93,7 @@ namespace SubdivideSlab
             return new ModelCurve(curve, null, new Transform(0, 0, elevation));
         }
 
-        private static SlabSubdivision CreateSlabSubdivision(string ID, IList<Curve> boundaries, Floor floor)
+        private static SlabSubdivision CreateSlabSubdivision(string ID, IList<Curve> boundaries, Floor floor, bool isTrimmed)
         {
             var outerBoundary = boundaries.First();
             var polygon = (Polygon)outerBoundary;
@@ -100,7 +104,6 @@ namespace SubdivideSlab
                 for (int i = 1; i < boundaries.Count; i++)
                 {
                     profile.Voids.Add((Polygon)boundaries[i]);
-
                 }
             }
             var depth = floor.Thickness;
@@ -109,7 +112,7 @@ namespace SubdivideSlab
             var geomRep = new Representation(new[] { extrude });
             var material = BuiltInMaterials.Concrete;
             var volume = polygon.Area() * depth;
-            return new SlabSubdivision(ID, profile, depth, volume, transform, material, geomRep, Guid.NewGuid(), "");
+            return new SlabSubdivision(ID, profile, isTrimmed, depth, volume, transform, material, geomRep, false, Guid.NewGuid(), "");
         }
         private static double GetFloorElevation(Floor floor)
         {
