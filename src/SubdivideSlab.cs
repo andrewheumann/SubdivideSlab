@@ -49,7 +49,7 @@ namespace SubdivideSlab
                     transform.Invert();
                 }
                 var grid = new Grid2d(boundaries, transform);
-                if (input.SubdivideAtVoidCorners && voids.Count > 0)
+                if (input.SubdivideAtVoidCorners && voids != null && voids.Count > 0)
                 {
                     foreach (var voidCrv in voids)
                     {
